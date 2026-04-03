@@ -2,6 +2,7 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import { SECRET } from "../util/config.js";
+import Session from "../models/session.js";
 
 const router = express.Router();
 
@@ -28,10 +29,12 @@ router.post("/", async (req, res) => {
   };
 
   const token = jwt.sign(userForToken, SECRET);
-
-  res
-    .status(200)
-    .send({ token, username: user.username, name: user.name });
+  try {
+    await Session.create({ userId: user.id, token });
+  } catch (err) {
+    console.log(err);
+  }
+  res.status(200).send({ token, username: user.username, name: user.name });
 });
 
 export default router;

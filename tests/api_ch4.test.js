@@ -18,7 +18,7 @@ before(async () => {
   sessionUser = await createUser(
     "session@example.com",
     "Session User",
-    "sessionpass"
+    "secret"
   );
 
   // Create a blog for reading list tests
@@ -240,7 +240,7 @@ describe("Session Management API", () => {
   it("login creates a session", async () => {
     const response = await axios.post(`${baseUrl}/login`, {
       username: "session@example.com",
-      password: "sessionpass",
+      password: "secret",
     });
 
     assert.ok([200, 201].includes(response.status));
@@ -311,9 +311,9 @@ describe("Session Management API", () => {
   });
 
   it("multiple logins create separate sessions", async () => {
-    const token1 = await login("session@example.com", "sessionpass");
+    const token1 = await login("session@example.com", "secret");
     await sleep(1100);
-    const token2 = await login("session@example.com", "sessionpass");
+    const token2 = await login("session@example.com", "secret");
 
     assert.notStrictEqual(token1, token2);
 
@@ -343,7 +343,7 @@ describe("Session Management API", () => {
   it("logout removes all sessions for that user", async () => {
     // Previous test created two sessions; logout should remove both
     await sleep(1100);
-    const token = await login("session@example.com", "sessionpass");
+    const token = await login("session@example.com", "secret");
 
     await axios.delete(`${baseUrl}/logout`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -367,7 +367,7 @@ describe("Session Management API", () => {
 
   it("active user can make authenticated requests", async () => {
     await sleep(1100);
-    const token = await login("session@example.com", "sessionpass");
+    const token = await login("session@example.com", "secret");
 
     const newBlog = {
       title: "Blog for Active User",
@@ -389,7 +389,7 @@ describe("Integration: Reading Lists and Sessions", () => {
   let integrationToken;
 
   it("create blog and add to reading list", async () => {
-    integrationToken = await login("test2@example.com", "password456");
+    integrationToken = await login("test2@example.com", "secret");
 
     const newBlog = {
       title: "Integration Test Blog",
@@ -447,7 +447,7 @@ describe("Integration: Reading Lists and Sessions", () => {
 
   it("new session allows access to reading list operations again", async () => {
     await sleep(1100);
-    const newToken = await login("test2@example.com", "password456");
+    const newToken = await login("test2@example.com", "secret");
 
     const response = await axios.put(
       `${baseUrl}/readinglists/${integrationReadingListId}`,

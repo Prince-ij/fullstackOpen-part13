@@ -25,6 +25,13 @@ Blog.init(
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    year: {
+      type: DataTypes.INTEGER,
+      validate: {
+        min: 1998,
+        max: 2026,
+      },
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -34,7 +41,7 @@ Blog.init(
   {
     sequelize,
     underscored: true,
-    timestamps: false,
+    timestamps: true,
     modelName: "blog",
   }
 );

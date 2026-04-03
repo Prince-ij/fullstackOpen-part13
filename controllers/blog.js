@@ -1,25 +1,10 @@
 import { Router } from "express";
 import Blog from "../models/blog.js";
 import User from "../models/user.js";
-import { SECRET } from "../util/config.js";
-import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 
 const router = Router();
-
-const tokenExtractor = (req, res, next) => {
-  const authorization = req.get("authorization");
-  if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
-    try {
-      req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
-    } catch {
-      return res.status(401).json({ error: "token invalid" });
-    }
-  } else {
-    return res.status(401).json({ error: "token missing" });
-  }
-  next();
-};
+import { tokenExtractor } from "../util/middleware.js";
 
 router.get("/", async (req, res) => {
   const where = {};
